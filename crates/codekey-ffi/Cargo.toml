@@ -1,0 +1,13 @@
+[package]
+name = "codekey-ffi"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "C ABI for CodeKey engine (Fcitx5 and other native addons)"
+
+[lib]
+name = "codekey"
+crate-type = ["cdylib", "staticlib", "rlib"]
+
+[dependencies]
+codekey-engine = { workspace = true }

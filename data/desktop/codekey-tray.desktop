@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=CodeKey
+Name[vi]=CodeKey — Bộ gõ tiếng Việt
+Comment=Vietnamese input method tray (Telex/VNI)
+Comment[vi]=Bộ gõ tiếng Việt trên khay hệ thống
+Exec=codekey-tray
+Icon=input-keyboard
+Terminal=false
+Categories=Utility;System;
+StartupNotify=false
+X-GNOME-Autostart-enabled=true

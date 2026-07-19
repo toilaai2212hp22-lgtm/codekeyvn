@@ -1,0 +1,35 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/codekey-engine",
+    "crates/codekey-cli",
+    "crates/codekey-ibus",
+    "crates/codekey-ffi",
+    "crates/codekey-tray",
+]
+default-members = [
+    "crates/codekey-engine",
+    "crates/codekey-cli",
+    "crates/codekey-ibus",
+    "crates/codekey-tray",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+authors = ["CodeKey Contributors"]
+repository = "https://github.com/toilaai2212hp22-lgtm/codekeyvn"
+description = "Vietnamese input method for Linux — UniKey-like, works with IBus, Fcitx5, and terminal"
+
+[workspace.dependencies]
+codekey-engine = { path = "crates/codekey-engine" }
+serde = { version = "1", features = ["derive"] }
+thiserror = "2"
+zbus = { version = "5", default-features = false, features = ["tokio"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "signal", "sync", "net", "io-util", "time"] }
+clap = { version = "4", features = ["derive"] }
+anyhow = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+zvariant = "5"

@@ -1,0 +1,15 @@
+[package]
+name = "codekey-engine"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Vietnamese Telex/VNI composition engine (pure Rust, no I/O)"
+
+[dependencies]
+serde = { workspace = true, optional = true }
+
+[features]
+default = []
+serde = ["dep:serde"]
+
+[dev-dependencies]

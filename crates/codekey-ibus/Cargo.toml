@@ -1,0 +1,20 @@
+[package]
+name = "codekey-ibus"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "CodeKey IBus engine — Vietnamese IME for Linux (IBus)"
+
+[[bin]]
+name = "ibus-engine-codekey"
+path = "src/main.rs"
+
+[dependencies]
+codekey-engine = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+zbus = { workspace = true }
+zvariant = { workspace = true }
+tokio = { workspace = true }
+serde = { workspace = true }

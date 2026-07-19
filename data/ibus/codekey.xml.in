@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Component file for IBus. @EXE@ and @ICON@ are substituted by install.sh -->
+<component>
+  <name>org.freedesktop.IBus.codekey</name>
+  <description>CodeKey — Vietnamese input method (Telex/VNI)</description>
+  <exec>@EXE@</exec>
+  <version>0.1.0</version>
+  <author>CodeKey Contributors</author>
+  <license>MIT</license>
+  <homepage>https://github.com/example/codekey</homepage>
+  <textdomain>codekey</textdomain>
+
+  <engines>
+    <engine>
+      <name>codekey</name>
+      <language>vi</language>
+      <license>MIT</license>
+      <author>CodeKey Contributors</author>
+      <icon>@ICON@</icon>
+      <layout>us</layout>
+      <longname>CodeKey (Telex)</longname>
+      <description>Vietnamese Telex — CodeKey</description>
+      <rank>99</rank>
+      <symbol>vi</symbol>
+    </engine>
+    <engine>
+      <name>codekey-vni</name>
+      <language>vi</language>
+      <license>MIT</license>
+      <author>CodeKey Contributors</author>
+      <icon>@ICON@</icon>
+      <layout>us</layout>
+      <longname>CodeKey (VNI)</longname>
+      <description>Vietnamese VNI — CodeKey</description>
+      <rank>98</rank>
+      <symbol>vi</symbol>
+    </engine>
+  </engines>
+</component>

@@ -1,0 +1,16 @@
+[package]
+name = "codekey-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "CodeKey CLI — test Vietnamese Telex/VNI in the terminal"
+default-run = "codekey"
+
+[[bin]]
+name = "codekey"
+path = "src/main.rs"
+
+[dependencies]
+codekey-engine = { workspace = true }
+clap = { workspace = true }
+anyhow = { workspace = true }

@@ -1,0 +1,15 @@
+/target/
+**/target/
+/dist/
+fcitx5-addon/build/
+*.so
+*.a
+*.o
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store
+# accidental package downloads in tree
+/*.deb
+/tmp/

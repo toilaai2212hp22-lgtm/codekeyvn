@@ -1,0 +1,118 @@
+# Maintainer: CodeKey Contributors
+# Arch Linux package for CodeKey (IBus + optional Fcitx5)
+pkgname=codekey
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Vietnamese Telex/VNI input method (IBus + Fcitx5) — UniKey-like for Linux"
+arch=('x86_64' 'aarch64')
+url="https://github.com/example/codekey"
+license=('MIT')
+depends=('ibus' 'gcc-libs')
+optdepends=(
+  'fcitx5: Fcitx5 frontend (KDE/Wayland)'
+  'fcitx5-configtool: configure Fcitx5'
+  'fcitx5-qt: Qt apps'
+  'fcitx5-gtk: GTK apps'
+)
+makedepends=('rust' 'cargo' 'cmake' 'extra-cmake-modules' 'fcitx5' 'pkgconf')
+source=("$pkgname-$pkgver.tar.gz::file://PLACEHOLDER")
+# When packaging from git checkout, use:
+# source=("$pkgname::git+https://...")
+sha256sums=('SKIP')
+
+prepare() {
+  # Build from the repository root when using local packaging:
+  #   cd packaging/arch && makepkg -si   (with SRC from monorepo)
+  :
+}
+
+build() {
+  # Expect sources already at $srcdir/codekey or monorepo root passed via CODEKEY_ROOT
+  local root="${CODEKEY_ROOT:-$srcdir/codekey}"
+  if [[ ! -f "$root/Cargo.toml" ]]; then
+    root="$startdir/../.."
+  fi
+  cd "$root"
+  export CARGO_TARGET_DIR="$srcdir/target"
+  cargo build --release --locked 2>/dev/null || cargo build --release \
+    -p codekey-cli -p codekey-ibus -p codekey-tray -p codekey-ffi
+
+  # Fcitx5 addon (optional if headers present)
+  if pacman -Q fcitx5 &>/dev/null || pkg-config --exists Fcitx5Core 2>/dev/null; then
+    cmake -S fcitx5-addon -B "$srcdir/fcitx5-build" \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_INSTALL_PREFIX=/usr \
+      -DCODEKEY_ROOT="$root" \
+      -DCODEKEY_LIB_DIR="$srcdir/target/release" \
+      -DCODEKEY_INCLUDE_DIR="$root/include"
+    cmake --build "$srcdir/fcitx5-build"
+  fi
+}
+
+package() {
+  local root="${CODEKEY_ROOT:-$srcdir/codekey}"
+  if [[ ! -f "$root/Cargo.toml" ]]; then
+    root="$startdir/../.."
+  fi
+  local bin="$srcdir/target/release"
+  [[ -x "$bin/codekey" ]] || bin="$root/target/release"
+
+  install -Dm755 "$bin/codekey" "$pkgdir/usr/bin/codekey"
+  install -Dm755 "$bin/codekey-tray" "$pkgdir/usr/bin/codekey-tray"
+  install -Dm755 "$bin/ibus-engine-codekey" "$pkgdir/usr/lib/ibus-engine-codekey"
+  install -Dm755 "$bin/libcodekey.so" "$pkgdir/usr/lib/libcodekey.so"
+
+  install -Dm644 /dev/stdin "$pkgdir/usr/share/ibus/component/codekey.xml" <<EOF
+<?xml version="1.0" encoding="utf-8"?>
+<component>
+  <name>org.freedesktop.IBus.codekey</name>
+  <description>CodeKey — Vietnamese Telex/VNI</description>
+  <exec>/usr/lib/ibus-engine-codekey</exec>
+  <version>${pkgver}</version>
+  <author>CodeKey Contributors</author>
+  <license>MIT</license>
+  <homepage>${url}</homepage>
+  <textdomain>codekey</textdomain>
+  <engines>
+    <engine>
+      <name>codekey</name>
+      <language>vi</language>
+      <license>MIT</license>
+      <author>CodeKey Contributors</author>
+      <icon>input-keyboard</icon>
+      <layout>us</layout>
+      <longname>CodeKey (Telex)</longname>
+      <description>Vietnamese Telex</description>
+      <rank>99</rank>
+      <symbol>vi</symbol>
+    </engine>
+    <engine>
+      <name>codekey-vni</name>
+      <language>vi</language>
+      <license>MIT</license>
+      <author>CodeKey Contributors</author>
+      <icon>input-keyboard</icon>
+      <layout>us</layout>
+      <longname>CodeKey (VNI)</longname>
+      <description>Vietnamese VNI</description>
+      <rank>98</rank>
+      <symbol>vi</symbol>
+    </engine>
+  </engines>
+</component>
+EOF
+
+  install -Dm644 "$root/data/desktop/codekey-tray.desktop" \
+    "$pkgdir/usr/share/applications/codekey-tray.desktop"
+  install -Dm644 "$root/data/desktop/codekey-tray.desktop" \
+    "$pkgdir/etc/xdg/autostart/codekey-tray.desktop"
+
+  if [[ -d "$srcdir/fcitx5-build" ]]; then
+    DESTDIR="$pkgdir" cmake --install "$srcdir/fcitx5-build"
+  fi
+
+  install -Dm644 "$root/README.md" "$pkgdir/usr/share/doc/codekey/README.md"
+}
+
+# Local build helper (from repo root):
+#   CODEKEY_ROOT=$PWD makepkg -sf -p packaging/arch/PKGBUILD
